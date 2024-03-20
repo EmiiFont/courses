@@ -13,14 +13,14 @@ if (args.length > 2) {
   task = args[3];
 }
 
-
 const openai = new ChatOpenAI({
 });
 
 const prompt = new PromptTemplate({
   template: "Write a very short {language} function that will {task}",
   inputVariables: ["language", "task"]
-})
+});
+
 
 const testPrompt = new PromptTemplate({
   inputVariables: ["language", "code"],
