@@ -6,7 +6,7 @@ import { z } from "zod";
 const conn = new Database("db.sqlite");
 
 
-function listTables() {
+export function listTables() {
   const result = conn.query("SELECT name FROM sqlite_master WHERE type='table';");
   const rest = result.all();
   return rest.map((r: any) => r.name);

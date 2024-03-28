@@ -10,10 +10,9 @@ function listTables() {
 }
 
 function runSqlliteQuery(sql: string): any {
-  const result = conn.query(sql);
-  return result.get();
+  const queryResult = conn.query(sql);
+  return queryResult.get();
 }
 
-console.log(listTables());
-const rest = await runSqlliteQuery("SELECT COUNT(*) FROM users");
+console.log(listTables()); const rest = await runSqlliteQuery("SELECT COUNT(*) FROM users");
 console.log(rest["COUNT(*)"]);
