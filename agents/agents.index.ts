@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate, HumanMessagePromptTemplate, MessagesPlaceholder } from "langchain/prompts";
 import { AgentExecutor, createOpenAIToolsAgent } from "langchain/agents";
-import { listTables, runSqlQueryTool } from "./tools/sql";
+import { describeTablesTool, listTables, runSqlQueryTool } from "./tools/sql";
 import { SystemMessage } from "langchain/schema";
 
 // testing dynamic tools
@@ -11,13 +11,18 @@ const chat = new ChatOpenAI({});
 const prompt = new ChatPromptTemplate({
   inputVariables: ["input", "agent_scratchpad"],
   promptMessages: [
-    new SystemMessage({ content: `You are an AI that has access to a SQLite Database\n${tables}` }),
+    new SystemMessage({
+      content: `You are an AI that has access to a SQLite Database\n
+    the databse hs tables of: ${tables}\n
+    Do no make assumptions about what tables exist in the database
+    or what columns exist. Instead, use the 'describe_tables' function
+` }),
     HumanMessagePromptTemplate.fromTemplate("{input}"),
     new MessagesPlaceholder({ variableName: "agent_scratchpad" }),
   ]
 });
 
-const tools = [runSqlQueryTool]
+const tools = [runSqlQueryTool, describeTablesTool];
 
 const agent = await createOpenAIToolsAgent({
   llm: chat,
