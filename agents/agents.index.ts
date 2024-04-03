@@ -5,10 +5,10 @@ import { describeTablesTool, listTables, runSqlQueryTool } from "./tools/sql";
 import { SystemMessage } from "langchain/schema";
 import { reportTool } from "./tools/report";
 import { BufferMemory } from "langchain/memory";
-
+import { ChatModelStartHandler } from "./handlers/chatModelStartHandler";
 const tables = listTables();
 
-const chat = new ChatOpenAI({});
+const chat = new ChatOpenAI({ callbacks: [new ChatModelStartHandler()] });
 const prompt = new ChatPromptTemplate({
   inputVariables: ["input", "agent_scratchpad", "chat_history"],
   promptMessages: [
@@ -33,6 +33,6 @@ const agent = await createOpenAIToolsAgent({
   prompt: prompt,
 });
 
-const agentExecutor = new AgentExecutor({ agent: agent, tools: tools, verbose: true, memory: memory });
+const agentExecutor = new AgentExecutor({ agent: agent, tools: tools, memory: memory });
 await agentExecutor.invoke({ input: "how many orders are there?. write the results to an html report." });
 await agentExecutor.invoke({ input: "repeat the same process but for users" });
